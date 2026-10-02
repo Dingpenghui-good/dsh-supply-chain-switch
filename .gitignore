@@ -1,0 +1,11 @@
+# Node
+node_modules/
+
+# Env / local
+.env
+.env.*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.log
