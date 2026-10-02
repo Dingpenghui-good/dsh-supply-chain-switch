@@ -8,7 +8,7 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] - 2026-10-02
+## [1.1.0] - 2026-10-02
 
 ### 新增 Added
 
@@ -21,6 +21,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - 状态记录：每次切换写入 profile 根目录的 `.dsh-supply-chain-switch.json`。
   State record: every switch writes `.dsh-supply-chain-switch.json` in the profile root.
 
+### 修复 Fixed
+
+- **行模块名**：patch 行原先声明 `@local/dsh-supply-chain-switch`（DSH 文档模板里的占位名），在 profile 中解析不到，导致该条目 `failed to import`。现改为真实包名 `@dingpenghui/dsh-supply-chain-switch`。
+  **Row module name**: the patch row declared `@local/dsh-supply-chain-switch` (a placeholder from the DSH docs template) which resolves nowhere in a profile, so the entry failed to import. It now names the real package, `@dingpenghui/dsh-supply-chain-switch`.
+- **可编辑表单**：宿主导出 `Config`，且两个字段标记 `.volatile()`。此前缺少 `Config` 使该行没有 schema；即使补上，未标 volatile 的字段也会被 settings 框架拒绝写入，详情页控件因此不可用。
+  **Editable form**: the host exports `Config` with both fields marked `.volatile()`. Without `Config` the row had no schema, and without `volatile` the settings framework rejects every write, leaving the detail-page control disabled.
+- **表单取值**：客户端改用页面宿主传入的 `form` prop，并回退到 `ctx.configForms.get('include:<行 id>')`；此前漏掉 `include:` 前缀，永远匹配不到条目。
+  **Form lookup**: the client now uses the `form` prop the page owner supplies, falling back to `ctx.configForms.get('include:<row id>')`; the previous key omitted the `include:` prefix and never matched the entry.
+- 客户端只注册 `plugins.row.config`：配置属于行，组合包级页面没有单一表单。
+  The client registers only `plugins.row.config`: the configuration belongs to the row, and a bundle-wide page has no single form.
+- `.gitignore` 原先混入 UTF-16 字节，导致 `.npmrc` 实际未被忽略；已重写为纯 UTF-8。
+  `.gitignore` contained grafted UTF-16 bytes, so `.npmrc` was not actually ignored; rewritten as plain UTF-8.
+- 移除失效的 `index.mjs` 改名步骤（tsdown 现已直接产出 `index.js`）。
+  Removed a stale `index.mjs` rename step; tsdown now emits `index.js` directly.
+
 ### 说明 Notes
 
 - 宽松模式写入 `minimumReleaseAge: 0` + `minimumReleaseAgeStrict: false`；默认模式写入 `1440` + `true`。
@@ -30,4 +45,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - 放宽策略存在供应链风险：刚发布的包可能尚未完成安全审查，用完请切回默认。
   Relaxing the policy carries supply-chain risk: freshly published packages may not have completed security review, so switch back to default when done.
 
+## [1.0.0] - 2026-10-02
+
+首个发布版本：仅提供 `/supply-chain` 命令，尚无客户端详情页。
+Initial release: the `/supply-chain` command only, with no client detail page.
+
+[1.1.0]: https://github.com/Dingpenghui-good/dsh-supply-chain-switch/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Dingpenghui-good/dsh-supply-chain-switch/releases/tag/v1.0.0
