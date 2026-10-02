@@ -1,16 +1,21 @@
-# @local/dsh-supply-chain-switch bundle patch
-# 提供 /supply-chain 命令，可在 DSH 的 supply-chain 策略（minimumReleaseAge）之间切换：
-#   - on  : minimumReleaseAge=0 + minimumReleaseAgeStrict=false → 允许刚发布的 npm 包
-#   - off : minimumReleaseAge=1440 + minimumReleaseAgeStrict=true → 恢复 DSH 默认 24h 策略
+# @dingpenghui/dsh-supply-chain-switch bundle patch
+# 在插件详情页（开关 + 保存）或 /supply-chain 命令（on/off/status）之间
+# 切换 DSH 的 supply-chain 策略（minimumReleaseAge）：
+#   - 宽松（on）: minimumReleaseAge=0 + minimumReleaseAgeStrict=false → 允许刚发布的 npm 包
+#   - 默认（off）: minimumReleaseAge=1440 + minimumReleaseAgeStrict=true → 恢复 DSH 默认 24h 策略
 #
-# 插件会写入 C:\Users\dph\.dsh\profiles\desktop\pnpm-workspace.yaml 的
-# minimumReleaseAge / minimumReleaseAgeStrict 两个 key，pnpm 安装时读取此配置。
+# 插件把行 config（settings 命名空间 supply-chain-switch，volatile 字段）
+# 作为期望值，周期性同步进 C:\Users\dph\.dsh\profiles\<profile>\pnpm-workspace.yaml
+# 的 minimumReleaseAge / minimumReleaseAgeStrict 两个 key，pnpm 安装时读取此配置；
+# 并把状态记录到 profile 根目录的 .dsh-supply-chain-switch.json。
 #
-# 插件本身不接管 web 搜索，仅注册两个命令。
+# 插件本身不接管 web 搜索。
 - insert:
   - id: supply-chain-switch
-    name: '@local/dsh-supply-chain-switch'
+    name: '@dingpenghui/dsh-supply-chain-switch'
     config:
       # 默认策略（off）：1440 分钟（24h）+ strict
+      # 详情页保存后，settings 框架会把新值写回 profile 的 cordis.patch.yml user 层，
+      # 本行的 config 是出厂默认。
       minimumReleaseAge: 1440
       minimumReleaseAgeStrict: true
