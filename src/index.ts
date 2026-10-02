@@ -159,6 +159,18 @@ function renderStatus(state: SwitchState | undefined, yaml: string): string {
   return lines.join('\n')
 }
 
+/** 命令 handler 的调用参数（最小结构；完整 CommandInvocation 含 commandId/agent/signal） */
+interface SupplyChainInvocation {
+  /** 斜杠命令名后的原始输入（含分隔空白） */
+  rawInput: string
+}
+
+/** 命令 handler 的返回结果 */
+interface CommandResult {
+  kind: 'success' | 'error'
+  text: string
+}
+
 /**
  * 应用插件到宿主 Context。
  *
@@ -179,7 +191,7 @@ export function apply(ctx: Context): void {
     name: 'supply-chain',
     description: '切换 DSH supply-chain（minimumReleaseAge）策略：on=宽松（可装刚发布包）/ off=默认 24h 冷却 / status=查看',
     input: { hint: 'on | off | status（默认 status）' },
-    handler(invocation) {
+    handler(invocation: SupplyChainInvocation): CommandResult {
       const raw = invocation.rawInput.trim().toLowerCase()
       const mode: 'on' | 'off' | 'status' =
         raw === '' || raw === 'status' ? 'status'
@@ -196,7 +208,7 @@ export function apply(ctx: Context): void {
         writeState(relaxed)
 
         return {
-          kind: 'success' as const,
+          kind: 'success',
           text:
             relaxed
               ? '✅ Supply-chain 策略已切换为**宽松模式**（minimumReleaseAge=0）。' +
@@ -211,7 +223,7 @@ export function apply(ctx: Context): void {
       const current = readWorkspaceYaml()
       const state = readState()
       return {
-        kind: 'success' as const,
+        kind: 'success',
         text: renderStatus(state, current),
       }
     },

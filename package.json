@@ -53,7 +53,7 @@
     "url": "git+https://github.com/dingpenghui-good/dsh-supply-chain-switch.git"
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "tsdown && node -e \"const{renameSync}=require('node:fs');renameSync('lib/index.mjs','lib/index.js');try{renameSync('lib/index.d.mts','lib/index.d.ts')}catch{}\"",
     "typecheck": "tsc -p tsconfig.json",
     "dev": "tsdown --watch",
     "prepublishOnly": "pnpm run typecheck && pnpm run build"
