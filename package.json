@@ -1,6 +1,6 @@
 {
   "name": "@dingpenghui/dsh-supply-chain-switch",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "DSH plugin: toggle the supply-chain (minimumReleaseAge) policy on/off — /supply-chain on|off|status lets you install just-published npm packages or restore DSH's default 24h cooldown",
   "type": "module",
   "main": "./lib/index.js",

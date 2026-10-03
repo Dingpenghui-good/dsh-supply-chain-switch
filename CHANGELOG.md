@@ -8,6 +8,22 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-10-03
+
+### 修复 Fixed
+
+- **npm 包缺失 `lib/client.js`**：1.0.0 的 npm 包没有发布客户端 bundle（`exports` 声明了 `./client` 但文件未包含在 `files` 里），导致宿主客户端 loader 报 `failed to import`（10-02 三次启动失败的直接原因）。现在 `lib/client.js` 随包发布。
+  **`lib/client.js` missing from the npm package**: the 1.0.0 release shipped without the client bundle, causing `failed to import` in the host client loader. Now included.
+- **`package.json` 缺少 `./client` 导出条目**：`exports` 声明了但 npm 包里没有对应文件。现在补上 `"./client": {"default": "./lib/client.js"}`。
+  **Missing `./client` export in `package.json`**: the `exports` field declared it but the npm package had no corresponding file. Now added.
+- **移除 `@deepseek-ai/dsh-web` 硬依赖**：npm 1.0.0 把它写成了运行时 `dependencies`，导致插件树里出现第二份宿主模块实例，Symbol 身份分裂风险。本插件源码不导入 `dsh-web`，该依赖纯属误加，已移除。
+  **Removed the `@deepseek-ai/dsh-web` hard dependency**: npm 1.0.0 had it as a runtime `dependencies`, creating a second host-module instance in the plugin tree with Symbol-identity-split risk. The source does not import `dsh-web` at all, so this was spurious and has been removed.
+
+### 说明 Notes
+
+- `lib/client.js` 现在显式外部化 `@deepseek-ai/schemastery` 与 `@deepseek-ai/cosmokit`（`tsdown.config.ts` 的 `CLIENT_EXTERNALS`），确保客户端 bundle 不内嵌宿主模块副本，与内置宿主保持单实例。
+  The client bundle now explicitly externalizes `@deepseek-ai/schemastery` and `@deepseek-ai/cosmokit` (in `CLIENT_EXTERNALS` in `tsdown.config.ts`) so it never inlines host-module copies and stays single-instance with the built-in host.
+
 ## [1.1.0] - 2026-10-02
 
 ### 新增 Added
@@ -50,5 +66,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 首个发布版本：仅提供 `/supply-chain` 命令，尚无客户端详情页。
 Initial release: the `/supply-chain` command only, with no client detail page.
 
+[1.1.1]: https://github.com/Dingpenghui-good/dsh-supply-chain-switch/releases/tag/v1.1.1
 [1.1.0]: https://github.com/Dingpenghui-good/dsh-supply-chain-switch/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Dingpenghui-good/dsh-supply-chain-switch/releases/tag/v1.0.0

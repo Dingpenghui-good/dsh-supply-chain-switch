@@ -14,6 +14,8 @@ const CLIENT_EXTERNALS = [
   'react-dom',
   'react-dom/client',
   '@deepseek-ai/cordis',
+  '@deepseek-ai/cosmokit',
+  '@deepseek-ai/schemastery',
   '@deepseek-ai/dsh-client-ui-slots',
   '@deepseek-ai/dsh-client-locale',
   '@deepseek-ai/dsh-client-ui-primitives',
