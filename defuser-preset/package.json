@@ -1,0 +1,12 @@
+{
+  "name": "@dingpenghui/dsh-defuser-preset",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DSH preset bundle: 拆弹专家 (defuser) agent preset",
+  "type": "module",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
